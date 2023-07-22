@@ -16,7 +16,6 @@ def address_to_coord(address: str,api_key: str, cityinfo: bool=False) -> list[fl
     """
 
     url = "https://api.geoapify.com/v1/geocode/search?text=" + address + "&apiKey=" + api_key
-# https://api.geoapify.com/v1/geocode/search?text=松山機場&apiKey=f0305e991db040688c28b59ac6d9fbd5
     headers = CaseInsensitiveDict()
     headers["Accept"] = "application/json"
 
@@ -49,8 +48,6 @@ def distance_calc(coord1: list[float], coord2: list[float], mode: str, api_key: 
     headers = {}
     
     resp = requests.get(url, headers=headers, data=payload).json()
-    # print(resp["rows"][0]["elements"][0])
-    # print(resp)
     distance = float(resp["rows"][0]["elements"][0]["distance"]["value"])*0.001 #m->km
     duration = float(resp["rows"][0]["elements"][0]["duration"]["value"])
     
@@ -91,10 +88,3 @@ def taxi_calc(distance: float, city: str) -> int:
         return (100 + ((distance*1000-1500)/250)*5)
     else:
         return (90 + ((distance*1000-1250)/200)*5)
-
-
-x = address_to_coord("桃園市大園區航站南路9號","f0305e991db040688c28b59ac6d9fbd5")
-y = address_to_coord("台北市松山區敦化北路340之9號1樓","f0305e991db040688c28b59ac6d9fbd5")
-dis, dur = distance_calc(x,y ,"driving", "AIzaSyB8jGb3zHAnT_47p-c-5avxJ4KieHEs7-c")
-fare = taxi_calc(dis, address_to_coord("桃園市大園區航站南路9號","f0305e991db040688c28b59ac6d9fbd5",True))
-print(fare)
