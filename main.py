@@ -1,87 +1,90 @@
 import telebot
+from datetime import datetime
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, InlineQueryResultPhoto
-import api.weather_api #use weather.weather(address) to get the weather
-from telegram import Update
-from telegram.ext import CallbackContext, MessageHandler, Filters 
-
-API_KEY = '6057511045:AAGut6QZzRU64WDYZmT4bvBk47Mb9srVJD8'
-bot = telebot.TeleBot(API_KEY)
-
-#retart
-backQuery = InlineKeyboardButton("New Option", callback_data="New Option")
-deleteQuery = InlineKeyboardButton("Delete Message", callback_data="Delete")
-renderingMenu = InlineKeyboardMarkup([[
-  InlineKeyboardButton("walk", callback_data="walking"),
-  InlineKeyboardButton("UBike", callback_data="biking"),
-  InlineKeyboardButton("drive", callback_data="driving"),
-  InlineKeyboardButton("scooter", callback_data="scooter"),
-  InlineKeyboardButton("mass", callback_data="mass"),
-  InlineKeyboardButton("taxi", callback_data="taxi"),
-], [backQuery, deleteQuery]])
-
-def location(update: Update, context: CallbackContext): 
-    current_pos = (update.message.location.latitude, update.message.location.longitude) 
-    print(current_pos) 
-@bot.add_handler(MessageHandler(Filters.location, location))
-
-@bot.message_handler(commands=['start'])
-def start(message):
-
-  reply_markup = renderingMenu
-  bot.reply_to(message, 'Enter an option.', reply_markup=reply_markup)
 
 
-@bot.callback_query_handler(func=lambda cb: cb.data == "New Option")
-def Back(call):
-
-  reply_markup = renderingMenu
-  bot.reply_to(call.message, 'Enter an option.', reply_markup=reply_markup)
+import api.maps_api 
+import api.Ubike_api
+import api.weather_api
 
 
-@bot.callback_query_handler(func=lambda cb: cb.data == "Delete")
-def Delete(call):
-  bot.delete_message(call.message.chat.id, call.message.message_id)
+API_TOKEN = '6352815505:AAE2C8RWX12R1io18BBcJYFqJlP817Ub3kg'
+
+bot = telebot.TeleBot(API_TOKEN)
+start = []
+dest = []
+
+# Handle '/start' and '/help'
+@bot.message_handler(commands=['help', 'start'])
+def send_welcome(message):
+    bot.reply_to(message, """\
+哈囉，你也在煩惱晚餐吃什麼嗎
+
+用 /add 告訴我你喜歡哪些美食
+輸入 /list 查看完整美食列表
+晚餐時間只要用 /eat 就能幫你決定囉 (⁎⁍̴̛ᴗ⁍̴̛⁎)
+""")
 
 
-@bot.callback_query_handler(func=lambda cb: cb.data == "walking")
-def walking(call):
-  reply_markup = InlineKeyboardMarkup([[backQuery,deleteQuery,]])
-  bot.reply_to(call.message, 'ok', reply_markup=reply_markup)
-  bot.answer_callback_query(call.id, " ")
+@bot.message_handler(commands=['setstart'])
+def set_start(message):
+    start = api.maps_api.address_to_coord(message.text[10:],"f0305e991db040688c28b59ac6d9fbd5",False)
+    if start[0]==400:
+        bot.reply_to(message, 'Wrong. Please try again.')
+    else:
+        bor.reply_to
+        
 
 
-@bot.callback_query_handler(func=lambda cb: cb.data == 'biking')
-def biking(call):
+@bot.message_handler(commands=['setdest'])
+def set_start(message):
+    dest = api.maps_api.address_to_coord(message.text[9:],"f0305e991db040688c28b59ac6d9fbd5")
+    bot.reply_to(message, 'OK')
 
-  reply_markup = InlineKeyboardMarkup([[backQuery,deleteQuery,]])
-  bot.reply_to(call.message, 'Enter an option.', reply_markup=reply_markup)
-  bot.answer_callback_query(call.id, " ")
-
-@bot.callback_query_handler(func=lambda cb: cb.data == "driving")
-def driving(call):
-  reply_markup = InlineKeyboardMarkup([[backQuery,deleteQuery,]])
-  bot.reply_to(call.message, 'ok', reply_markup=reply_markup)
-  bot.answer_callback_query(call.id, " ")
+@bot.callback_quary_handler(func=lambda cb: cb.data == "press_the button")
+def press_the_buttom(call):
+    InlineKeyboardMarkup([[InlineKeyboardButton("a", callback_data="b"), InlineKeyboardButton("a", callback_data="b"),]])
+    InlineKeyboardMarkup([[InlineKeyboardButton("a", callback_data="b"), InlineKeyboardButton("a", callback_data="b"),]])
+    InlineKeyboardMarkup([[InlineKeyboardButton("a", callback_data="b"), InlineKeyboardButton("a", callback_data="b"),]])
 
 
-@bot.callback_query_handler(func=lambda cb: cb.data == "scooter")
-def scooter(call):
-  reply_markup = InlineKeyboardMarkup([[backQuery,deleteQuery,]])
-  bot.reply_to(call.message, 'ok', reply_markup=reply_markup)
-  bot.answer_callback_query(call.id, "")
 
 
-@bot.callback_query_handler(func=lambda cb: cb.data == "mass")
-def mass(call):
-  reply_markup = InlineKeyboardMarkup([[backQuery,deleteQuery,]])
-  bot.reply_to(call.message, 'ok', reply_markup=reply_markup)
-  bot.answer_callback_query(call.id, " ")
+
+@bot.message_handler(commands=[""])
+def eat_food(message):
+    bot.reply_to(message, 'TODO')
 
 
-@bot.callback_query_handler(func=lambda cb: cb.data == "taxi")
-def taxi(call):
-  reply_markup = InlineKeyboardMarkup([[backQuery,deleteQuery,]])
-  bot.reply_to(call.message, 'ok', reply_markup=reply_markup)
-  bot.answer_callback_query(call.id, " ")
+@bot.message_handler(commands=['time'])
+def time_cmd(message):
+    t = datetime.now().strftime('%m 月 %d 日 %H:%M:%S')
 
-bot.polling()
+    reply_markup = InlineKeyboardMarkup([
+        [
+            InlineKeyboardButton("更新時間", callback_data="time_update"),
+        ]
+    ])
+    bot.reply_to(message, f'現在時間：{t}', reply_markup=reply_markup)
+
+
+@bot.callback_query_handler(func=lambda cb: cb.data.startswith('time_'))
+def time_cb(call):
+    if call.data == "time_update":
+        reply_markup = InlineKeyboardMarkup([
+            [
+                InlineKeyboardButton("更新時間", callback_data="time_update"),
+            ]
+        ])
+
+        t = datetime.now().strftime('%m 月 %d 日 %H:%M:%S')
+        bot.edit_message_text(text=f'現在時間：{t}',
+                              chat_id=call.message.chat.id,
+                              message_id=call.message.message_id,
+                              reply_markup=reply_markup)
+
+        bot.answer_callback_query(call.id, "時間已更新")
+
+
+print('Bot is online!')
+bot.infinity_polling()

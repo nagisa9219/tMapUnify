@@ -2,13 +2,12 @@ import json
 import requests
 from requests.structures import CaseInsensitiveDict
 
-def address_to_coord(address: str,api_key: str, cityinfo: bool=False) -> list[float]:
+def address_to_coord(address: str, cityinfo: bool=False) -> list[float]:
     """
         此function透過Geogapify Geocode API將地址轉換為經緯度座標
         
         Args:
             address (str): 欲轉換的地址
-            api_key (str): API的key
             cityinfo (bool): 顯示該地址位於的縣市英文名稱(概略)，可略
 
         Returns:
@@ -17,7 +16,7 @@ def address_to_coord(address: str,api_key: str, cityinfo: bool=False) -> list[fl
             [status_code (str): 若查無地址或其他錯誤，則僅回傳此項]
     """
 
-    url = "https://api.geoapify.com/v1/geocode/search?text=" + address + "&apiKey=" + api_key
+    url = "https://api.geoapify.com/v1/geocode/search?text=" + address + "&apiKey=f0305e991db040688c28b59ac6d9fbd5"
     headers = CaseInsensitiveDict()
     headers["Accept"] = "application/json"
 
@@ -32,20 +31,19 @@ def address_to_coord(address: str,api_key: str, cityinfo: bool=False) -> list[fl
         city = resp["features"][0]["properties"]["city"]
         return city
 
-def distance_calc(coord1: list[float], coord2: list[float], mode: str, api_key: str) :
+def distance_calc(coord1: list[float], coord2: list[float], mode: str) :
     """
         計算起始點與目的地的路線距離並依交通方式計算通行時間
 
         Args:
             coord1, coord2 (list[float]): 起始,目的地的經緯度座標
             mode (str) ={driving|bicycling|walking|transit}: 交通方式
-            api_key (str): API的key
         
         Returns:
             distance, duration (int, float): 計算過後的交通距離及花費時間(單位：公里,秒)
     """
 
-    url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str(coord1[1]) + "%2C" + str(coord1[0]) + "&destinations=" + str(coord2[1]) + "%2C" + str(coord2[0]) + "&mode=" + mode +"&key=" + api_key
+    url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str(coord1[1]) + "%2C" + str(coord1[0]) + "&destinations=" + str(coord2[1]) + "%2C" + str(coord2[0]) + "&mode=" + mode +"&key=AIzaSyB8jGb3zHAnT_47p-c-5avxJ4KieHEs7-c"
     payload = {}
     headers = {}
     
@@ -90,3 +88,4 @@ def taxi_calc(distance: float, city: str) -> int:
         return (100 + ((distance*1000-1500)/250)*5)
     else:
         return (90 + ((distance*1000-1250)/200)*5)
+print("")
