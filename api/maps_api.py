@@ -23,10 +23,10 @@ def address_to_coord(address: str, cityinfo: bool=False) -> list[float]:
 
     resp = requests.get(url, headers=headers).json()
     if resp["features"] == []:
-        return "400"
+        return "F",[400,400]
     elif cityinfo == False:
         coord = resp["features"][0]["geometry"]["coordinates"]
-        return coord
+        return "T",coord
     elif cityinfo == True:
         city = resp["features"][0]["properties"]["city"]
         return city
@@ -49,7 +49,7 @@ def distance_calc(coord1: list[float], coord2: list[float], mode: str) :
     
     resp = requests.get(url, headers=headers, data=payload).json()
     distance = float(resp["rows"][0]["elements"][0]["distance"]["value"])*0.001 #m->km
-    duration = float(resp["rows"][0]["elements"][0]["duration"]["value"])
+    duration = int(resp["rows"][0]["elements"][0]["duration"]["value"])
     
     return distance, duration
 
