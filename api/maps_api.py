@@ -43,7 +43,6 @@ def distance_calc(coord1: list[float], coord2: list[float], mode: str, api_key: 
         
         Returns:
             distance, duration (int, float): 計算過後的交通距離及花費時間(單位：公里,秒)
-
     """
 
     url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str(coord1[1]) + "%2C" + str(coord1[0]) + "&destinations=" + str(coord2[1]) + "%2C" + str(coord2[0]) + "&mode=" + mode +"&key=" + api_key
