@@ -9,7 +9,7 @@ def address_to_coord(address: str,api_key: str, cityinfo: bool=False) -> list[fl
         Args:
             address (str): 欲轉換的地址
             api_key (str): API的key
-            cityinfo (bool): 顯示該地址位於的縣市英文名稱(概略)
+            cityinfo (bool): 顯示該地址位於的縣市英文名稱(概略)，可略
 
         Returns:
             lat, lot (float, float): 地址轉換過後的經緯度座標
@@ -34,9 +34,9 @@ def distance_calc(coord1: list[float], coord2: list[float], mode: str, api_key: 
         計算起始點與目的地的路線距離並依交通方式計算通行時間
 
         Args:
-            coord1, coord2: list[float] 起始,目的地的經緯度座標
-            mode: str {driving|bicycling|walking|transit} 交通方式
-            api_key: str API的key
+            coord1, coord2 (list[float]): 起始,目的地的經緯度座標
+            mode (str) ={driving|bicycling|walking|transit}: 交通方式
+            api_key (str): API的key
         
         Returns:
             distance, duration (int, float): 計算過後的交通距離及花費時間(單位：公里,秒)
@@ -63,7 +63,7 @@ def taxi_calc(distance: float, city: str) -> int:
             city (str): 出發地所在縣市(英文名稱)
         
         Returns:
-            int: 估算的車資
+            fare (int): 估算的車資
     
     """
     if city == "Keelong" or city == "New Taipei" or city == "Taipei":
