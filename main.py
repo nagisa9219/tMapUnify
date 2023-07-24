@@ -1,10 +1,8 @@
 import telebot #telebot imported
 #import api.Ubike_api
-from datetime import datetime
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, InlineQueryResultPhoto
 import api.maps_api 
 import api.weather_api
-
 
 API_TOKEN = '6352815505:AAE2C8RWX12R1io18BBcJYFqJlP817Ub3kg'
 
