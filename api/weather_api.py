@@ -1,7 +1,7 @@
 import requests
 import json
 
-def weather(lad: float, lon: float):
+def weather(lad: str, lon: str):
     """
         輸入地點的經緯度已取得當地及時的氣象資訊
 
@@ -9,7 +9,7 @@ def weather(lad: float, lon: float):
             lad, lon (float): 地點的經緯度座標
     
     """
-    url="https://api.openweathermap.org/data/2.5/weather?lat="+lad+"&lon="+lon+"&appid=d11faca77d78a15c85b9a1f1ea09dcd2"
+    url="https://api.openweathermap.org/data/2.5/weather?lat="+lon+"&lon="+lad+"&appid=d11faca77d78a15c85b9a1f1ea09dcd2"
     date={}
     resp=requests.get(url).json()
 
@@ -21,3 +21,4 @@ def weather(lad: float, lon: float):
     main_data=data["weather"][0]["description"]
     
     return main_data
+#print(type(weather("30","30")))

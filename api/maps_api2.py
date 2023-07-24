@@ -42,11 +42,11 @@ def distance_calc(coord1: list[float], coord2: list[float], mode: str) :
             statuscode, distance, duration (str, int, float): 狀態碼及計算過後的交通距離和花費時間(單位：公里,秒)
                 statuscode = {"T"|"F"}: T: 正常, F: 異常
     """
-    url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str(coord1[0][1][1]) + "%2C" + str(coord1[0][1][0]) + "&destinations=" + str(coord2[0][1][1]) + "%2C" + str(coord2[0][1][0]) + "&mode=" + mode +"&key=AIzaSyB8jGb3zHAnT_47p-c-5avxJ4KieHEs7-c"
+
+    url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str(coord1[1]) + "%2C" + str(coord1[0]) + "&destinations=" + str(coord2[1]) + "%2C" + str(coord2[0]) + "&mode=" + mode +"&key=AIzaSyB8jGb3zHAnT_47p-c-5avxJ4KieHEs7-c"
     payload = {}
     headers = {}
     resp = requests.get(url, headers=headers, data=payload).json()
-    print(resp)
     print(resp["rows"][0]["elements"][0])
     if resp["rows"][0]["elements"][0]["status"] == "NOT_FOUND":
         return "F",0,0
