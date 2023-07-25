@@ -1,6 +1,10 @@
 import json
 import requests
 from requests.structures import CaseInsensitiveDict
+from api_token import apitoken
+
+apitokens = apitoken()
+
 
 def address_to_coord(address: str, cityinfo: bool=False) -> tuple[str, float, float]:
     """
@@ -8,18 +12,16 @@ def address_to_coord(address: str, cityinfo: bool=False) -> tuple[str, float, fl
         
         Args:
             address (str): 欲轉換的地址
-            cityinfo (bool): 顯示該地址位於的縣市英文名稱(概略)，可略
+            cityinfo (bool): 顯示該地址位於的縣市英文名稱(概略)，預設為False，可略
 
         Returns:
             statuscode, lat, lot (str, float, float): 地址轉換過後的經緯度座標(cityinfo == False時)
+                statuscode = {"T"|"F"}: T: 正常, F: 異常
             [cityname (str)]: 出發地點所屬的縣市名稱(概略, cityinfo == True時)
     """
-
-    url = "https://api.geoapify.com/v1/geocode/search?text=" + address + "&apiKey=f0305e991db040688c28b59ac6d9fbd5"
+    url = "https://api.geoapify.com/v1/geocode/search?text=" + address + "&apiKey=" + apitokens.geoaphify
     headers = CaseInsensitiveDict()
     headers["Accept"] = "application/json"
-
-
     resp = requests.get(url, headers=headers).json()
     if resp["features"] == []:
         return "F",[400,400]
@@ -42,13 +44,15 @@ def distance_calc(coord1: list[float], coord2: list[float], mode: str) :
             statuscode, distance, duration (str, int, float): 狀態碼及計算過後的交通距離和花費時間(單位：公里,秒)
                 statuscode = {"T"|"F"}: T: 正常, F: 異常
     """
-    url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str(coord1[0][1][1]) + "%2C" + str(coord1[0][1][0]) + "&destinations=" + str(coord2[0][1][1]) + "%2C" + str(coord2[0][1][0]) + "&mode=" + mode +"&key=AIzaSyB8jGb3zHAnT_47p-c-5avxJ4KieHEs7-c"
+    url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + str(coord1[0][1][1]) + "%2C" + str(coord1[0][1][0]) + "&destinations=" + str(coord2[0][1][1]) + "%2C" + str(coord2[0][1][0]) + "&mode=" + mode +"&key=" + apitoken["googlemaps"]
     payload = {}
     headers = {}
     resp = requests.get(url, headers=headers, data=payload).json()
-    print(resp)
-    print(resp["rows"][0]["elements"][0])
-    if resp["rows"][0]["elements"][0]["status"] == "NOT_FOUND":
+    # print(resp)
+    # print(resp["rows"][0]["elements"][0])
+    # print(resp)
+    status_error = ["NOT_FOUND", "ZERO_RESULTS"]
+    if resp["rows"][0]["elements"][0]["status"] in status_error:
         return "F",0,0
     else:
         distance = float(resp["rows"][0]["elements"][0]["distance"]["value"])*0.001 #m->km

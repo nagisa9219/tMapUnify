@@ -1,5 +1,8 @@
 import requests
 import json
+from api_token import get_apitoken
+
+apitoken = get_apitoken()
 
 def weather(lad: str, lon: str):
     """
@@ -9,7 +12,7 @@ def weather(lad: str, lon: str):
             lad, lon (float): 地點的經緯度座標
     
     """
-    url="https://api.openweathermap.org/data/2.5/weather?lat="+lon+"&lon="+lad+"&appid=d11faca77d78a15c85b9a1f1ea09dcd2"
+    url="https://api.openweathermap.org/data/2.5/weather?lat=" + lon + "&lon=" + lad + "&appid=" + apitoken["openweather"]
     date={}
     resp=requests.get(url).json()
 
