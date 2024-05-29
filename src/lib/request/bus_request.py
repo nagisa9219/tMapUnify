@@ -7,7 +7,7 @@ print(train_url)
 train_res = requests.get(train_url,headers=headers)
 j = train_res.json()
 #print(j)
-with open ("bus.json","w") as f:
+with open("./reqcache/bus_reqcache.json","w") as f:
     json.dump(j,f)
 '''
 print(j[0]['RouteID']['Zh_tw'])

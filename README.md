@@ -2,13 +2,11 @@
 
 ## 概念 Concept
 
-### 創作目的
+### 介紹
 
 **tMap Unify**是一款透過提供整合資訊，協助使用者從起始點與目的地，結合使用者自身理想條件等，提供各式交通工具之利與弊以輔助使用者選擇之Telegram Bot。
 
-**tMap Unify** is a Telegram Bot Project providing unified trasportation informations to users by collecting numerous websites and APIs.
-
-### NABC分析 Analyse
+### NABC分析
 
 #### N需求 Need
 
@@ -28,7 +26,7 @@
 更簡易的操作方式
 整合性
 
-## 功能實現 Features
+## 功能
 
 ### 交通工具選擇
 
@@ -51,8 +49,7 @@
 
 ## 輪桌討論回饋 Discusstions& comments
 
-> 下列回饋均來自SITCON夏令營於的23/7/20的黑客松輪桌會議課程\
-> Following comments are conclution from Hackathon Course during SITCON Camp 2023.
+> 下列回饋均來自SITCON夏令營於23/7/20的黑客松輪桌會議課程\
 
 1. Ｇoogle maps功能重疊性較高，但部分資訊能須經由其他平台
 2. 短期內技術上沒辦法以概略資訊搜尋到實際地點
@@ -69,11 +66,3 @@
 9. 我們的主意很棒(拍手)
 10. 號誌燈數量、時長，步行區？
 11. cross functional diagram
-
-## 鳴謝 Credits& Contributors
-
-test
-
-## 授權 Licence
-
-test

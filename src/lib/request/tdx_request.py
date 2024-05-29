@@ -1,9 +1,10 @@
 import requests
 from pprint import pprint
 import json
+from token.apitoken_get import token
 
 app_id = 'f64101032-9258f9a3-68bd-408b'
-app_key = '8d6fa2b1-b47a-442b-9c39-1a84f36bb8ec'
+app_key = token.tdxToken()
 
 auth_url="https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token"
 url = "https://tdx.transportdata.tw/api/basic/v2/Rail/TRA/LiveTrainDelay?$top=30&$format=JSON"

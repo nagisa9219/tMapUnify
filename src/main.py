@@ -1,12 +1,11 @@
 import telebot #telebot imported
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, InlineQueryResultPhoto
-import api.maps_api 
-import api.weather_api
-from api.api_token import apitoken
+import lib.request.maps_request
+import lib.request.openweather_request
+from lib.token.apitoken_get import token
 # import api.Ubike_api
 
-apitokens = apitoken()
-bot = telebot.TeleBot(apitokens.telebot)
+bot = telebot.TeleBot(token.teleBotToken())
 start = []
 dest = []
 is_valid = False
@@ -36,7 +35,7 @@ def set_start(message):
         bot.reply_to(message, "輸入的資訊有誤，請再試一遍!\n\n指令用法:\n/setstart <地址>")
     else:
         place_list.append(message.text[10:])
-        start.append(api.maps_api.address_to_coord(message.text[10:],False))
+        start.append(lib.request.maps_request.address_to_coord(message.text[10:],False))
         if start[0] == "F":
             bot.reply_to(message, '輸入的資訊有誤，請再試一遍!')
             #print(start)
@@ -47,7 +46,7 @@ def set_start(message):
 
 @bot.message_handler(commands=['setdest'])
 def set_dest(message):
-    dest.append(api.maps_api.address_to_coord(message.text[9:]))
+    dest.append(lib.request.maps_request.address_to_coord(message.text[9:]))
     # print(start,dest)
     if message.text[9:] in place_list:
         bot.reply_to(message, "目的地不可以和起始點相同，請再試一遍!")
@@ -73,8 +72,8 @@ def set_dest(message):
 def walking(call):
     # print("walking")
     #bot.reply_to(call.message,f")\
-    con=api.weather_api.weather(str(dest[0][1][0]),str(dest[0][1][1]))
-    cost=api.maps_api.distance_calc(start,dest,"walking")
+    con=lib.request.openweather_request.weather(str(dest[0][1][0]),str(dest[0][1][1]))
+    cost=lib.request.maps_request.distance_calc(start,dest,"walking")
     bot.reply_to(call.message,f"the weather there is {con}")
     bot.reply_to(call.message,f"The estimated distance is {cost[1]:.2f}km,\nand it will take about {int(cost[2]/60)}mins to get there.")
     # print(con,cost)
@@ -84,8 +83,8 @@ def walking(call):
 def biking(call):
     # print("walking")
     #bot.reply_to(call.message,f")\
-    weather_result=api.weather_api.weather(str(dest[0][1][0]),str(dest[0][1][1]))
-    distance_result=api.maps_api.distance_calc(start,dest,"bicycling")
+    weather_result=lib.request.openweather_request.weather(str(dest[0][1][0]),str(dest[0][1][1]))
+    distance_result=lib.request.maps_request.distance_calc(start,dest,"bicycling")
     bot.reply_to(call.message,f"the weather is {weather_result}")
     bot.reply_to(call.message,f"The estimated distance is {distance_result[1]:.2f}km,\nand it will take about {int(distance_result[2]/60)}mins to get there.")
     
@@ -93,8 +92,8 @@ def biking(call):
 def driving(call):
     # print("driving")
     #bot.reply_to(call.message,f")\
-    con=api.weather_api.weather(str(dest[0][1][0]),str(dest[0][1][1]))
-    cost=api.maps_api.distance_calc(start,dest,"driving")
+    con=lib.request.openweather_request.weather(str(dest[0][1][0]),str(dest[0][1][1]))
+    cost=lib.request.maps_request.distance_calc(start,dest,"driving")
     bot.reply_to(call.message,f"The weather there is {con}")
     bot.reply_to(call.message,f"The estimated distance is {cost[1]:.2f}km,\nand it will take about {int(cost[2]/60)}mins to get there.")
     #print(con,cost)
@@ -103,8 +102,8 @@ def driving(call):
 @bot.callback_query_handler(func=lambda cb: cb.data =="masstrans")
 def mass(call):
     #bot.reply_to(call.message,f")\
-    con=api.weather_api.weather(str(dest[0][1][0]),str(dest[0][1][1]))
-    cost=api.maps_api.distance_calc(start,dest,"transit")
+    con=lib.request.openweather_request.weather(str(dest[0][1][0]),str(dest[0][1][1]))
+    cost=lib.request.maps_request.distance_calc(start,dest,"transit")
     bot.reply_to(call.message,f"The weather there is {con}")
     bot.reply_to(call.message,f"The estimated distance is {cost[1]:.2f}km,\nand it will take about {int(cost[2]/60)}mins to get there.")
     #print(con,cost)
@@ -113,8 +112,8 @@ def mass(call):
 @bot.callback_query_handler(func=lambda cb: cb.data =="taxi")
 def taxi(call):
     #bot.reply_to(call.message,f")\
-    con=api.weather_api.weather(str(dest[0][1][0]),str(dest[0][1][1]))
-    cost=api.maps_api.distance_calc(start,dest,"driving")
+    con=lib.request.openweather_request.weather(str(dest[0][1][0]),str(dest[0][1][1]))
+    cost=lib.request.maps_request.distance_calc(start,dest,"driving")
     bot.reply_to(call.message,f"The weather there is {con}")
     bot.reply_to(call.message,f"The estimated distance is {cost[1]:.2f}km,\nand it will take about {int(cost[2]/60)}mins to get there.")
     #print(con,cost)

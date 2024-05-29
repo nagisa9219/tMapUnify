@@ -1,16 +1,12 @@
-import requests
-import json
-from requests.structures import CaseInsensitiveDict
-from  maps_api import address_to_coord, distance_calc
+import requests, json
+from  lib.request.maps_request import address_to_coord, distance_calc
+
 enter_user='user-agent'
 enter_web='Mozilla/5.0'
 ID_Data_clean=[]
 Location_Data_clean=[]
 output_data=[]
 city=input()
-
-geo_api_key='f0305e991db040688c28b59ac6d9fbd5'
-google_api_key='AIzaSyB8jGb3zHAnT_47p-c-5avxJ4KieHEs7-c'
 
 '''
 Ubike 即時性站點更新
@@ -27,10 +23,10 @@ def ID_Rest_call(user,web):
     #print(Ubike_url)
     ID_res =requests.get(Ubike_ID_url,headers=headers)
     j = ID_res.json()
-    with open ("Ubike.json","w",encoding='utf-8') as f:
+    with open("./reqcache/ubike.json","w",encoding='utf-8') as f:
         ID_Data=json.dump(j,f)
         f.close
-    with open ("Ubike.json","r",encoding='utf-8') as f:
+    with open("./reqcache/ubike.json","r",encoding='utf-8') as f:
         ID_Data=json.load(f)
         for i in range(len(ID_Data)):
             ID_Rest={}
@@ -58,10 +54,10 @@ def ID_Location_call(user,web):
     #print(Ubike_url)
     Location_res =requests.get(Ubike_Location_url,headers=headers)
     h = Location_res.json()
-    with open ("UbikeLocation.json","w",encoding='utf-8') as f:
+    with open("./reqcache/ubikeLocation.json","w",encoding='utf-8') as f:
         Location_Data=json.dump(h,f)
         f.close
-    with open ("UbikeLocation.json","r",encoding='utf-8') as f:
+    with open ("./reqcache/ubikeLocation.json","r",encoding='utf-8') as f:
         Location_Data=json.load(f)
         #print(Location_Data)
     for i in range(len(Location_Data)):
