@@ -1,6 +1,0 @@
-{
-    "python.analysis.extraPaths": [
-        "./api"
-    ],
-    "python.analysis.typeCheckingMode": "off"
-}
